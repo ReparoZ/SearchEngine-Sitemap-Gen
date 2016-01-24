@@ -33,7 +33,7 @@ if (!function_exists('add_se_sitemap_menu')) {
     function add_se_sitemap_menu() {
         /** Add a page to the options section of the website **/
         if (current_user_can('manage_options')) {
-            add_options_page('SE-Sitemap-Gen', 'SE-Sitemap-Gen', 8, __FILE__, 'se_sitemap_gen');
+            add_options_page('SE-Sitemap-Gen', 'SE-Sitemap-Gen', 'manage_options', __FILE__, 'se_sitemap_gen');
         }
     }
 }
@@ -41,14 +41,170 @@ if (!function_exists('add_se_sitemap_menu')) {
 /*======== SE-Sitemap-Gen page ========*/
 if (!function_exists('se_sitemap_gen')) {
     function se_sitemap_gen() {
+        if (isset($_GET['action']) && 'test' == $_GET['action']) { //TODO: FOR TEST
+            se_sitemap_create();
+        }
+        se_sitemap_gen_basic_page();
+    }
+}
+
+/*======== SE-Sitemap-Gen Basic Page ========*/
+if (!function_exists('se_sitemap_gen_basic_page')) {
+    function se_sitemap_gen_basic_page() {
+
+        if (is_multisite()) {
+            $home_url = preg_replace("/[^a-zA-ZА-Яа-я0-9\s]/", "_", str_replace('http://', '', str_replace('https://', '', home_url())));
+            $se_sitemap_url = ABSPATH . "sitemap_" . $home_url . ".xml";
+        } else {
+            $se_sitemap_url = ABSPATH . "sitemap.xml";
+        }
         ?>
         <div class="wrap">
             <h1 style="line-height: normal;"><?php _e("SearchEngine Sitemap Generator", 'se-sitemap-gen-plugin'); ?>
                 <span class="title-author">By ML3426</span></h1>
+            <h2 class="nav-tab-wrapper">
+                <a class="nav-tab<?php if (!isset($_GET['action'])) echo ' nav-tab-active'; ?>"
+                   href="options-general.php?page=search-engine-sitemap-gen%2Fsearch-engine-sitemap-gen.php"><?php _e('Settings', 'se-sitemap-gen-plugin'); ?></a>
+                <a class="nav-tab<?php if (isset($_GET['action']) && 'extra' == $_GET['action']) echo ' nav-tab-active'; ?>"
+                   href="options-general.php?page=search-engine-sitemap-gen%2Fsearch-engine-sitemap-gen.php&amp;action=extra"><?php _e('Extra settings', 'se-sitemap-gen-plugin'); ?></a>
+                <a class="nav-tab<?php if (isset($_GET['action']) && 'test' == $_GET['action']) echo ' nav-tab-active'; ?>"
+                   href="options-general.php?page=search-engine-sitemap-gen%2Fsearch-engine-sitemap-gen.php&amp;action=test">Test</a>
+            </h2>
+            <form action="" method="post">
+                <p class="submit">
+                    <input id="ses-submit-button" type="submit" class="button-primary"
+                           value="<?php _e('Save Changes', 'se-sitemap-gen-plugin'); ?>"/>
+                    <input id="ses-submit-button" type="button" class="button"
+                           value="<?php _e('Reset Changes', 'se-sitemap-gen-plugin'); ?>"/>
+                </p>
+            </form>
         </div>
         <?php
     }
 }
+
+if (!function_exists('se_sitemap_create')) {
+    function se_sitemap_create() {
+        $sitemap = new DOMDocument('1.0', 'utf-8');
+
+        $sitemap_stylesheet_path = (defined('WP_CONTENT_DIR')) ? home_url('/') . basename(WP_CONTENT_DIR) : home_url('/') . 'wp-content';
+        $sitemap_stylesheet_path .= (defined('WP_PLUGIN_DIR')) ? '/' . basename(WP_PLUGIN_DIR) . '/search-engine-sitemap-gen/sitemap.xsl' : '/plugins/search-engine-sitemap-gen/sitemap.xsl';
+
+        $xslt = $sitemap->createProcessingInstruction('xml-stylesheet', "type=\"text/xsl\" href=\"$sitemap_stylesheet_path\"");
+        $sitemap->appendChild($xslt);
+        $urlset = $sitemap->appendChild($sitemap->createElementNS('http://www.sitemaps.org/schemas/sitemap/0.9', 'urlset'));
+
+        // Add Home Page
+        $homepage_url = $urlset->appendChild($sitemap->createElement('url'));
+        $homepage_loc = $homepage_url->appendChild($sitemap->createElement('loc'));
+        $homepage_loc->appendChild($sitemap->createTextNode(home_url()));
+        $homepage_lastmod = $homepage_url->appendChild($sitemap->createElement('lastmod'));
+        $homepage_lastmod->appendChild($sitemap->createTextNode(date('Y-m-d\TH:i:sP')));
+        $homepage_changefreq = $homepage_url->appendChild($sitemap->createElement('changefreq'));
+        $homepage_changefreq->appendChild($sitemap->createTextNode('daily'));
+        $homepage_priority = $homepage_url->appendChild($sitemap->createElement('priority'));
+        $homepage_priority->appendChild($sitemap->createTextNode('1'));
+
+        // Add Post
+        $posts_args = array('numberposts' => 45000, 'post_status' => 'publish');
+        $posts_array = get_posts($posts_args);
+        foreach ($posts_array as $post) {
+            $node_url = $urlset->appendChild($sitemap->createElement('url'));
+            // Set Loc
+            $node_loc = $node_url->appendChild($sitemap->createElement('loc'));
+            $post_permalink = get_permalink($post);
+            $node_loc->appendChild($sitemap->createTextNode($post_permalink));
+            // Set Lastmod
+            $node_lastmod = $node_url->appendChild($sitemap->createElement('lastmod'));
+            $post_lastmod = date('Y-m-d\TH:i:sP', strtotime($post->post_modified));
+            $node_lastmod->appendChild($sitemap->createTextNode($post_lastmod));
+            // Set Changefreq
+            $node_changefreq = $node_url->appendChild($sitemap->createElement('changefreq'));
+            $node_changefreq->appendChild($sitemap->createTextNode('monthly'));
+            // Set Priority
+            $node_priority = $node_url->appendChild($sitemap->createElement('priority'));
+            $node_priority->appendChild($sitemap->createTextNode('1'));
+        }
+
+        //Add Pages
+        $pages_args = array(
+            'sort_order' => 'desc',
+            'sort_column' => 'post_date',
+            'post_status' => 'publish'
+        );
+        $pages_array = get_pages($pages_args);
+        foreach ($pages_array as $page) {
+            $node_url = $urlset->appendChild($sitemap->createElement('url'));
+            // Set Loc
+            $node_loc = $node_url->appendChild($sitemap->createElement('loc'));
+            $page_permalink = get_page_link($page->ID);
+            $node_loc->appendChild($sitemap->createTextNode($page_permalink));
+            // Set Lastmod
+            $node_lastmod = $node_url->appendChild($sitemap->createElement('lastmod'));
+            $page_lastmod = date('Y-m-d\TH:i:sP', strtotime($page->post_modified));
+            $node_lastmod->appendChild($sitemap->createTextNode($page_lastmod));
+            // Set Changefreq
+            $node_changefreq = $node_url->appendChild($sitemap->createElement('changefreq'));
+            $node_changefreq->appendChild($sitemap->createTextNode('weekly'));
+            // Set Priority
+            $node_priority = $node_url->appendChild($sitemap->createElement('priority'));
+            $node_priority->appendChild($sitemap->createTextNode('1'));
+        }
+
+        // Add Cates
+        $cates_args = array(
+            'orderby' => 'name',
+            'order' => 'ASC'
+        );
+        $cates_array = get_categories($cates_args);
+        foreach ($cates_array as $cate) {
+            $node_url = $urlset->appendChild($sitemap->createElement('url'));
+            // Set Loc
+            $node_loc = $node_url->appendChild($sitemap->createElement('loc'));
+            $cate_permalink = get_category_link($cate->term_id);
+            $node_loc->appendChild($sitemap->createTextNode($cate_permalink));
+            // Set Lastmod
+            $node_lastmod = $node_url->appendChild($sitemap->createElement('lastmod'));
+            $cate_lastmod = date('Y-m-d\TH:i:sP');
+            $node_lastmod->appendChild($sitemap->createTextNode($cate_lastmod));
+            // Set Changefreq
+            $node_changefreq = $node_url->appendChild($sitemap->createElement('changefreq'));
+            $node_changefreq->appendChild($sitemap->createTextNode('weekly'));
+            // Set Priority
+            $node_priority = $node_url->appendChild($sitemap->createElement('priority'));
+            $node_priority->appendChild($sitemap->createTextNode('1'));
+        }
+
+        // Add Tags
+        $tags_array = get_tags();
+        foreach ($tags_array as $tag) {
+            $node_url = $urlset->appendChild($sitemap->createElement('url'));
+            // Set Loc
+            $node_loc = $node_url->appendChild($sitemap->createElement('loc'));
+            $tag_permalink = get_tag_link($tag->term_id);
+            $node_loc->appendChild($sitemap->createTextNode($tag_permalink));
+            // Set Lastmod
+            $node_lastmod = $node_url->appendChild($sitemap->createElement('lastmod'));
+            $tag_lastmod = date('Y-m-d\TH:i:sP');
+            $node_lastmod->appendChild($sitemap->createTextNode($tag_lastmod));
+            // Set Changefreq
+            $node_changefreq = $node_url->appendChild($sitemap->createElement('changefreq'));
+            $node_changefreq->appendChild($sitemap->createTextNode('weekly'));
+            // Set Priority
+            $node_priority = $node_url->appendChild($sitemap->createElement('priority'));
+            $node_priority->appendChild($sitemap->createTextNode('1'));
+        }
+
+        $sitemap->formatOutput = true;
+        if (is_multisite()) {
+            $home_url = preg_replace("/[^a-zA-ZА-Яа-я0-9\s]/", "_", str_replace('http://', '', str_replace('https://', '', home_url())));
+            $sitemap->save(ABSPATH . 'sitemap_' . $home_url . '.xml');
+        } else {
+            $sitemap->save(ABSPATH . 'sitemap.xml');
+        }
+    }
+}
+
 
 /*======== SE-Sitemap-Gen StyleSheets Loader ========*/
 if (!function_exists('se_sitemap_add_stylesheet')) {
@@ -68,7 +224,7 @@ if (!function_exists('se_sitemap_lang_loader')) {
 }
 
 /** Tie the language files into Wordpress **/
-add_action( 'plugins_loaded', 'se_sitemap_lang_loader' );
+add_action('plugins_loaded', 'se_sitemap_lang_loader');
 
 /** Tie the stylesheets into Wordpress **/
 add_action('admin_enqueue_scripts', 'se_sitemap_add_stylesheet');

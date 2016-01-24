@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2016-01-24 00:33+0800\n"
-"PO-Revision-Date: 2016-01-24 00:34+0800\n"
+"POT-Creation-Date: 2016-01-24 17:27+0800\n"
+"PO-Revision-Date: 2016-01-24 18:41+0800\n"
 "Last-Translator: \n"
 "Language-Team: ML3426 <fml3426@gmail.com>\n"
 "Language: zh_CN\n"
@@ -16,6 +16,22 @@ msgstr ""
 "X-Poedit-KeywordsList: _e\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: search-engine-sitemap-gen.php:45
+#: search-engine-sitemap-gen.php:46
 msgid "SearchEngine Sitemap Generator"
 msgstr "Wordpress 站点地图生成器"
+
+#: search-engine-sitemap-gen.php:50
+msgid "Settings"
+msgstr "设置"
+
+#: search-engine-sitemap-gen.php:52
+msgid "Extra settings"
+msgstr "高级设置"
+
+#: search-engine-sitemap-gen.php:56
+msgid "Save Changes"
+msgstr "保存设置"
+
+#: search-engine-sitemap-gen.php:58
+msgid "Reset Changes"
+msgstr "重置设置"
