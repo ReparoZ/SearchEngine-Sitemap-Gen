@@ -3,4 +3,24 @@
         padding-left: 1em;
         font-size: 12px;
     }
+
+    #se_sitemap_notice_ignore:after {
+        font: 400 20px/1 dashicons !important;
+        speak: none;
+        margin: 0;
+        padding: 0;
+        display: inline-block;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        -moz-transition: all .1s ease-in-out;
+        -webkit-transition: all .1s ease-in-out;
+        transition: all .1s ease-in-out;
+        background-image: none !important;
+        float: right;
+        width: 36px;
+        height: 30px;
+        text-align: right;
+        content: "\f153";
+        color: #59524c;
+    }
 }

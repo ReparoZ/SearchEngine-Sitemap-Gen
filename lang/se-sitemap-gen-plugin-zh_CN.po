@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2016-01-24 17:27+0800\n"
-"PO-Revision-Date: 2016-01-24 18:41+0800\n"
+"POT-Creation-Date: 2016-01-25 17:12+0800\n"
+"PO-Revision-Date: 2016-01-25 17:35+0800\n"
 "Last-Translator: \n"
 "Language-Team: ML3426 <fml3426@gmail.com>\n"
 "Language: zh_CN\n"
@@ -13,25 +13,33 @@ msgstr ""
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: _e\n"
+"X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: search-engine-sitemap-gen.php:46
+#: search-engine-sitemap-gen.php:118
 msgid "SearchEngine Sitemap Generator"
 msgstr "Wordpress 站点地图生成器"
 
-#: search-engine-sitemap-gen.php:50
+#: search-engine-sitemap-gen.php:120
+msgid "Hidden Field Verify Faild"
+msgstr "隐藏域验证失败"
+
+#: search-engine-sitemap-gen.php:123
 msgid "Settings"
 msgstr "设置"
 
-#: search-engine-sitemap-gen.php:52
+#: search-engine-sitemap-gen.php:125
 msgid "Extra settings"
 msgstr "高级设置"
 
-#: search-engine-sitemap-gen.php:56
+#: search-engine-sitemap-gen.php:134
+msgid "Create or Replace the sitemap file while save the settings"
+msgstr "保存设置时更新Sitemap"
+
+#: search-engine-sitemap-gen.php:142
 msgid "Save Changes"
 msgstr "保存设置"
 
-#: search-engine-sitemap-gen.php:58
+#: search-engine-sitemap-gen.php:144
 msgid "Reset Changes"
 msgstr "重置设置"

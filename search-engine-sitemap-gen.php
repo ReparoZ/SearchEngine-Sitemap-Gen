@@ -27,6 +27,9 @@ License: GPL v2
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
+define('NOTICE_NOTICE', 'updated');
+define('NOTICE_WARNING', 'update-nag');
+define('NOTICE_ERROR', 'error');
 
 /*======== Function for adding menu and submenu ========*/
 if (!function_exists('add_se_sitemap_menu')) {
@@ -41,16 +44,71 @@ if (!function_exists('add_se_sitemap_menu')) {
 /*======== SE-Sitemap-Gen page ========*/
 if (!function_exists('se_sitemap_gen')) {
     function se_sitemap_gen() {
-        if (isset($_GET['action']) && 'test' == $_GET['action']) { //TODO: FOR TEST
-            se_sitemap_create();
+        global $plugin_basename, $err_message, $notice_message;
+        if (isset($_POST['se_sitemap_submit']) && 'submit' == $_POST['se_sitemap_submit']) {
+            if (!isset($_POST['se_sitemap_nonce']) || wp_verify_nonce($_POST['se_sitemap_nonce'], $plugin_basename)) {
+                $err_message = __('Hidden Field Verify Faild', 'se-sitemap-gen-plugin');
+            } else {
+                if (isset($_POST['se_sitemap_create']) && '1' == $_POST['se_sitemap_create']) {
+                    se_sitemap_create();
+                }
+            }
         }
         se_sitemap_gen_basic_page();
     }
 }
 
+/*======== Init SE-Sitemap-Gen Setting ========*/
+if (!function_exists('se_sitemap_init')) {
+    function se_sitemap_init() {
+        global $se_sitemap_plugin_info, $plugin_basename;
+        $plugin_basename = plugin_basename(__FILE__);
+
+        if (empty($se_sitemap_plugin_info)) {
+            if (!function_exists('get_plugin_data')) {
+                require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+            }
+            $se_sitemap_plugin_info = get_plugin_data(__FILE__);
+        }
+
+        if (isset($_GET['page']) && "search-engine-sitemap-gen/search-engine-sitemap-gen.php" == $_GET['page']) {
+            se_sitemap_register_setting();
+        }
+    }
+}
+
+/*======== Register SE-Sitemap-Gen Setting ========*/
+if (!function_exists('se_sitemap_register_setting')) {
+    function se_sitemap_register_setting() {
+        global $se_sitemap_settings, $se_sitemap_plugin_info, $se_sitemap_default_settings;
+
+        if (!get_option('se_sitemap_settings')) {
+            $se_sitemap_default_settings = array(
+                'sitemap_file_prefix' => 'sitemap',
+                'first_install' => strtotime('now'),
+                'display_welcome_message' => true
+            );
+            add_option('se_sitemap_settings', $se_sitemap_default_settings);
+        }
+
+
+    }
+}
+
+/*======== SE-Sitemap-Gen Notice ========*/
+if (!function_exists('se_sitemap_notice')) {
+    function se_sitemap_notice($type = NOTICE_NOTICE, $msgs = '') { ?>
+        <div id="se_sitemap_notice" class=<?php echo $type ?>><p><?php echo $msgs ?>
+                <span href="#" onclick="document.getElementById('se_sitemap_notice').style.display = 'none'"
+                      id="se_sitemap_notice_ignore" style="text-decoration: none; cursor: pointer">&nbsp;</span></p>
+        </div>
+    <?php }
+}
+
 /*======== SE-Sitemap-Gen Basic Page ========*/
 if (!function_exists('se_sitemap_gen_basic_page')) {
     function se_sitemap_gen_basic_page() {
+        global $plugin_basename, $err_message, $notice_message;
 
         if (is_multisite()) {
             $home_url = preg_replace("/[^a-zA-ZА-Яа-я0-9\s]/", "_", str_replace('http://', '', str_replace('https://', '', home_url())));
@@ -62,19 +120,32 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
         <div class="wrap">
             <h1 style="line-height: normal;"><?php _e("SearchEngine Sitemap Generator", 'se-sitemap-gen-plugin'); ?>
                 <span class="title-author">By ML3426</span></h1>
+            <?php
+            if (isset($err_message) && $err_message != '') se_sitemap_notice(NOTICE_ERROR, $err_message);
+            $err_message = '' ?>
             <h2 class="nav-tab-wrapper">
                 <a class="nav-tab<?php if (!isset($_GET['action'])) echo ' nav-tab-active'; ?>"
                    href="options-general.php?page=search-engine-sitemap-gen%2Fsearch-engine-sitemap-gen.php"><?php _e('Settings', 'se-sitemap-gen-plugin'); ?></a>
                 <a class="nav-tab<?php if (isset($_GET['action']) && 'extra' == $_GET['action']) echo ' nav-tab-active'; ?>"
                    href="options-general.php?page=search-engine-sitemap-gen%2Fsearch-engine-sitemap-gen.php&amp;action=extra"><?php _e('Extra settings', 'se-sitemap-gen-plugin'); ?></a>
-                <a class="nav-tab<?php if (isset($_GET['action']) && 'test' == $_GET['action']) echo ' nav-tab-active'; ?>"
-                   href="options-general.php?page=search-engine-sitemap-gen%2Fsearch-engine-sitemap-gen.php&amp;action=test">Test</a>
             </h2>
-            <form action="" method="post">
+            <form action="options-general.php?page=search-engine-sitemap-gen%2Fsearch-engine-sitemap-gen.php"
+                  method="post">
+                <?php wp_nonce_field($plugin_basename, 'se_sitemap_nonce') ?>
+                <table class="form-table">
+                    <tr valign="top">
+                        <td colspan="2">
+                            <label><input type='checkbox' name='se_sitemap_create' value="1"/>
+                                <?php _e("Create or Replace the sitemap file while save the settings", 'se-sitemap-gen-plugin'); ?>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+                <input type="hidden" name="se_sitemap_submit" value="submit"/>
                 <p class="submit">
-                    <input id="ses-submit-button" type="submit" class="button-primary"
+                    <input id="se-submit-button" type="submit" class="button-primary"
                            value="<?php _e('Save Changes', 'se-sitemap-gen-plugin'); ?>"/>
-                    <input id="ses-submit-button" type="button" class="button"
+                    <input id="se-submit-button" type="button" class="button"
                            value="<?php _e('Reset Changes', 'se-sitemap-gen-plugin'); ?>"/>
                 </p>
             </form>
@@ -83,6 +154,7 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
     }
 }
 
+/*======== SE-Sitemap-Gen Sitemap Creator ========*/
 if (!function_exists('se_sitemap_create')) {
     function se_sitemap_create() {
         $sitemap = new DOMDocument('1.0', 'utf-8');

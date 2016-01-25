@@ -98,8 +98,7 @@
             <body>
                 <div id="header">
                     <h1>XML Sitemap</h1>
-                    <h2>This is a XML Sitemap which is supposed to be processed by<a href="http://www.google.com">Google
-                        search engine</a>.
+                    <h2>This is a XML Sitemap which is supposed to be processed by all search engine.
                     </h2>
                 </div>
                 <div id="content">
@@ -142,9 +141,9 @@
                 </div>
                 <div id="footer">
                     Generated with
-                    <a href="http://bestwebsoft.com/products/google-sitemap/">Google Sitemap</a>
+                    <a href="http://product.ml3426.me/sitemap-gen/">SearchEngine Sitemap</a>
                     plugin by
-                    <a href="http://bestwebsoft.com">BestWebSoft</a>
+                    <a href="http://ml3426.me">ML3426</a>
                 </div>
             </body>
         </html>
