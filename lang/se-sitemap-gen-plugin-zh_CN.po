@@ -1,45 +1,186 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2016-01-25 17:12+0800\n"
-"PO-Revision-Date: 2016-01-25 17:35+0800\n"
+"POT-Creation-Date: 2016-01-29 00:12+0800\n"
+"PO-Revision-Date: 2016-01-29 00:30+0800\n"
 "Last-Translator: \n"
 "Language-Team: ML3426 <fml3426@gmail.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.5\n"
+"X-Generator: Poedit 1.8.6\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: _e;__\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: search-engine-sitemap-gen.php:118
-msgid "SearchEngine Sitemap Generator"
-msgstr "Wordpress 站点地图生成器"
-
-#: search-engine-sitemap-gen.php:120
+#: search-engine-sitemap-gen.php:50
 msgid "Hidden Field Verify Faild"
 msgstr "隐藏域验证失败"
 
-#: search-engine-sitemap-gen.php:123
-msgid "Settings"
-msgstr "设置"
+#: search-engine-sitemap-gen.php:121
+msgid "SearchEngine Sitemap Generator"
+msgstr "Wordpress 站点地图生成器"
 
-#: search-engine-sitemap-gen.php:125
-msgid "Extra settings"
-msgstr "高级设置"
-
-#: search-engine-sitemap-gen.php:134
-msgid "Create or Replace the sitemap file while save the settings"
-msgstr "保存设置时更新Sitemap"
+#: search-engine-sitemap-gen.php:137
+msgid "Sitemap related urls"
+msgstr "站点地图相关链接"
 
 #: search-engine-sitemap-gen.php:142
+msgid "Pages that are created or modified by Search Engine Sitemap Generator."
+msgstr "通过本插件生成或修改的页面"
+
+#: search-engine-sitemap-gen.php:167
+msgid "General settings"
+msgstr "常规设置"
+
+#: search-engine-sitemap-gen.php:171
+msgid "General options for your sitemap. We recommend you enable all of these."
+msgstr "一些关于您的网站地图的常规选项，我们建议您启用所有的这些选项。"
+
+#: search-engine-sitemap-gen.php:177
+msgid "Create or Replace the sitemap file while save the settings."
+msgstr "保存设置时更新站点地图"
+
+#: search-engine-sitemap-gen.php:185
+msgid "Add sitemap links to your robots.txt file."
+msgstr "保存更改到robots.txt"
+
+#: search-engine-sitemap-gen.php:190
+msgid "Just add recent"
+msgstr "只需添加最近"
+
+#: search-engine-sitemap-gen.php:193
+msgid "posts in your sitemap."
+msgstr "篇文章到站点地图中"
+
+#: search-engine-sitemap-gen.php:198
+msgid "Create HTML format sitemap also."
+msgstr "生成XML的同时生成HTML的站点地图"
+
+#: search-engine-sitemap-gen.php:203
+msgid ""
+"Support us by allowing a small credit in the sitemap file footer (Does not "
+"appear on your website)."
+msgstr ""
+"将一小段版权信息置于站点地图页脚处以支持我们（此信息将不会出现在你的网站上）"
+
+#: search-engine-sitemap-gen.php:211
+msgid "Sitemap defaults"
+msgstr "站点地图收录设置"
+
+#: search-engine-sitemap-gen.php:215
+msgid "Set the defaults for your sitemap here."
+msgstr "在这里设置是否收录或页面优先级等基本设置"
+
+#: search-engine-sitemap-gen.php:220
+msgid "Pages"
+msgstr "页面"
+
+#: search-engine-sitemap-gen.php:221
+msgid "Include/Exclude"
+msgstr "是否包括"
+
+#: search-engine-sitemap-gen.php:222
+msgid "Priority"
+msgstr "优先级"
+
+#: search-engine-sitemap-gen.php:223
+msgid "Update frequency"
+msgstr "更新频率"
+
+#: search-engine-sitemap-gen.php:224
+msgid "Mobile support"
+msgstr "移动端支持"
+
+#: search-engine-sitemap-gen.php:230
+msgid "Home Page"
+msgstr "首页"
+
+#: search-engine-sitemap-gen.php:234 search-engine-sitemap-gen.php:280
+#: search-engine-sitemap-gen.php:326 search-engine-sitemap-gen.php:372
+#: search-engine-sitemap-gen.php:418 search-engine-sitemap-gen.php:464
+msgid "Include"
+msgstr "包括"
+
+#: search-engine-sitemap-gen.php:235 search-engine-sitemap-gen.php:281
+#: search-engine-sitemap-gen.php:327 search-engine-sitemap-gen.php:373
+#: search-engine-sitemap-gen.php:419 search-engine-sitemap-gen.php:465
+msgid "Exclude"
+msgstr "排除"
+
+#: search-engine-sitemap-gen.php:266 search-engine-sitemap-gen.php:312
+#: search-engine-sitemap-gen.php:358 search-engine-sitemap-gen.php:404
+#: search-engine-sitemap-gen.php:450 search-engine-sitemap-gen.php:496
+msgid "None"
+msgstr "无移动优化"
+
+#: search-engine-sitemap-gen.php:267 search-engine-sitemap-gen.php:313
+#: search-engine-sitemap-gen.php:359 search-engine-sitemap-gen.php:405
+#: search-engine-sitemap-gen.php:451 search-engine-sitemap-gen.php:497
+msgid "Mobile(For Google)"
+msgstr "移动优化网页(谷歌)"
+
+#: search-engine-sitemap-gen.php:268 search-engine-sitemap-gen.php:314
+#: search-engine-sitemap-gen.php:360 search-engine-sitemap-gen.php:406
+#: search-engine-sitemap-gen.php:452 search-engine-sitemap-gen.php:498
+msgid "Mobile(For Baidu)"
+msgstr "移动优化网页(百度)"
+
+#: search-engine-sitemap-gen.php:269 search-engine-sitemap-gen.php:315
+#: search-engine-sitemap-gen.php:361 search-engine-sitemap-gen.php:407
+#: search-engine-sitemap-gen.php:453 search-engine-sitemap-gen.php:499
+msgid "PC,Mobile(For Baidu)"
+msgstr "自适应网页(百度)"
+
+#: search-engine-sitemap-gen.php:270 search-engine-sitemap-gen.php:316
+#: search-engine-sitemap-gen.php:362 search-engine-sitemap-gen.php:408
+#: search-engine-sitemap-gen.php:454 search-engine-sitemap-gen.php:500
+msgid "HtmlAdapt(For Baidu)"
+msgstr "代码适配网页(百度)"
+
+#: search-engine-sitemap-gen.php:276
+msgid "Regular Page"
+msgstr "一般页面"
+
+#: search-engine-sitemap-gen.php:322
+msgid "Post Page"
+msgstr "文章页面"
+
+#: search-engine-sitemap-gen.php:368
+msgid "Categories"
+msgstr "分类"
+
+#: search-engine-sitemap-gen.php:414
+msgid "Tags"
+msgstr "标签"
+
+#: search-engine-sitemap-gen.php:460
+msgid "Authors Page"
+msgstr "作者页"
+
+#: search-engine-sitemap-gen.php:513
 msgid "Save Changes"
 msgstr "保存设置"
 
-#: search-engine-sitemap-gen.php:144
+#: search-engine-sitemap-gen.php:515
 msgid "Reset Changes"
 msgstr "重置设置"
+
+#~ msgid ""
+#~ "General options for your sitemap. We recommend you enable all of these."
+#~ "(Except the last one.)"
+#~ msgstr ""
+#~ "一些关于您的网站地图的常规选项，我们建议您启用所有的这些选项（除了最后一"
+#~ "个）。"
+
+#~ msgid "Settings"
+#~ msgstr "设置"
+
+#~ msgid "Extra settings"
+#~ msgstr "附加设置"
+
+#~ msgid "If you use Sina App Engine, Please select this option."
+#~ msgstr "如果您使用Sina App Engine，请勾选此选项。"

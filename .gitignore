@@ -20,5 +20,6 @@ $RECYCLE.BIN/
 # Configuration Files
 .idea/
 
-#
+# Command File
 *.sh
+*.bat
