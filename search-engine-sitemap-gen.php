@@ -83,15 +83,9 @@ if (!function_exists('se_sitemap_register_setting')) {
 		global $se_sitemap_settings, $se_sitemap_plugin_info, $se_sitemap_default_settings;
 
 		if (!get_option('se_sitemap_settings')) {
-			$se_sitemap_default_settings = array(
-				'sitemap_file_prefix'     => 'sitemap',
-				'first_install'           => strtotime('now'),
-				'display_welcome_message' => true
-			);
-			add_option('se_sitemap_settings', $se_sitemap_default_settings);
+			$se_sitemap_default_settings = json_decode(file_get_contents(plugin_dir_path(__FILE__) . 'se_sitemap_default_setting.json'));
+			update_option('se_sitemap_settings', $se_sitemap_default_settings);
 		}
-
-
 	}
 }
 
@@ -108,8 +102,9 @@ if (!function_exists('se_sitemap_notice')) {
 /*======== SE-Sitemap-Gen Basic Page ========*/
 if (!function_exists('se_sitemap_gen_basic_page')) {
 	function se_sitemap_gen_basic_page() {
-		global $plugin_basename, $err_message, $notice_message;
-
+		global $plugin_basename, $err_message, $notice_message, $se_sitemap_default_settings;
+		$se_sitemap_default_settings = json_decode(file_get_contents(plugin_dir_path(__FILE__) . 'se_sitemap_default_setting.json'), true);
+		$se_sitemap_settings         = get_option('se_sitemap_settings');
 		if (is_multisite()) {
 			$home_url       = preg_replace("/[^a-zA-ZА-Яа-я0-9\s]/", "_", str_replace('http://', '', str_replace('https://', '', home_url())));
 			$se_sitemap_url = ABSPATH . "sitemap_" . $home_url . ".xml";
@@ -172,7 +167,10 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 										<ul>
 											<li>
 												<label>
-													<input type='checkbox' name='se_sitemap_create' value="1"/>
+													<input type='checkbox' name='se_sitemap_create'
+													       value="1" <?php if ($se_sitemap_settings['settings']['general_settings']['se_sitemap_create']) {
+														echo 'checked';
+													} ?>/>
 													<?php _e("Create or Replace the sitemap file while save the settings.", 'se-sitemap-gen-plugin'); ?>
 												</label>
 											</li>
@@ -180,25 +178,37 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 												<label><input type='checkbox' name='se_sitemap_robots'
 												              value="1" <?php if (!se_sitemap_robots_checker()) {
 														echo 'disabled';
+													} else if ($se_sitemap_settings['settings']['general_settings']['se_sitemap_robots']) {
+														echo 'checked';
 													} ?>/>
 													<?php _e("Add sitemap links to your robots.txt file.", 'se-sitemap-gen-plugin'); ?>
 												</label>
 											</li>
 											<li>
-												<label><input type='checkbox' name='se_sitemap_islimit' value="1"/>
+												<label><input type='checkbox' name='se_sitemap_islimit'
+												              value="1" <?php if ($se_sitemap_settings['settings']['general_settings']['se_sitemap_islimit']) {
+														echo 'checked';
+													} ?>/>
 													<?php _e("Just add recent", 'se-sitemap-gen-plugin'); ?>
-													<input type="number" min="10" max="40000" value="10"
+													<input type="number" min="10" max="40000"
+													       value="<?php echo $se_sitemap_settings['settings']['general_settings']['se_sitemap_limit'] ?>"
 													       name="se_sitemap_limit">
 													<?php _e("posts in your sitemap.", 'se-sitemap-gen-plugin'); ?>
 												</label>
 											</li>
 											<li>
-												<label><input type='checkbox' name='se_sitemap_html' value="1"/>
+												<label><input type='checkbox' name='se_sitemap_html'
+												              value="1" <?php if ($se_sitemap_settings['settings']['general_settings']['se_sitemap_html']) {
+														echo 'checked';
+													} ?>/>
 													<?php _e("Create HTML format sitemap also.", 'se-sitemap-gen-plugin'); ?>
 												</label>
 											</li>
 											<li>
-												<label><input type='checkbox' name='se_sitemap_credit' value="1"/>
+												<label><input type='checkbox' name='se_sitemap_credit'
+												              value="1" <?php if ($se_sitemap_settings['settings']['general_settings']['se_sitemap_credit']) {
+														echo 'checked';
+													} ?>/>
 													<?php _e("Support us by allowing a small credit in the sitemap file footer (Does not appear on your website).", 'se-sitemap-gen-plugin'); ?>
 												</label>
 											</li>
@@ -249,7 +259,7 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option value="7">0.7</option>
 														<option value="8">0.8</option>
 														<option value="9">0.9</option>
-														<option value="9">1.0</option>
+														<option value="10">1.0</option>
 													</select>
 												</td>
 												<td scope="col">
@@ -268,13 +278,13 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option
 															value="0"><?php _e("None", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
+															value="1"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="2"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="3"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="4"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 													</select>
 												</td>
 											</tr>
@@ -302,7 +312,7 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option value="7">0.7</option>
 														<option value="8">0.8</option>
 														<option value="9">0.9</option>
-														<option value="9">1.0</option>
+														<option value="10">1.0</option>
 													</select>
 												</td>
 												<td scope="col">
@@ -321,13 +331,13 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option
 															value="0"><?php _e("None", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
+															value="1"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="2"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="3"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="4"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 													</select>
 												</td>
 											</tr>
@@ -355,7 +365,7 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option value="7">0.7</option>
 														<option value="8">0.8</option>
 														<option value="9">0.9</option>
-														<option value="9">1.0</option>
+														<option value="10">1.0</option>
 													</select>
 												</td>
 												<td scope="col">
@@ -374,13 +384,13 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option
 															value="0"><?php _e("None", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
+															value="1"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="2"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="3"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="4"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 													</select>
 												</td>
 											</tr>
@@ -408,7 +418,7 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option value="7">0.7</option>
 														<option value="8">0.8</option>
 														<option value="9">0.9</option>
-														<option value="9">1.0</option>
+														<option value="10">1.0</option>
 													</select>
 												</td>
 												<td scope="col">
@@ -427,13 +437,13 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option
 															value="0"><?php _e("None", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
+															value="1"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="2"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="3"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="4"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 													</select>
 												</td>
 											</tr>
@@ -461,7 +471,7 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option value="7">0.7</option>
 														<option value="8">0.8</option>
 														<option value="9">0.9</option>
-														<option value="9">1.0</option>
+														<option value="10">1.0</option>
 													</select>
 												</td>
 												<td scope="col">
@@ -480,13 +490,13 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option
 															value="0"><?php _e("None", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
+															value="1"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="2"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="3"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="4"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 													</select>
 												</td>
 											</tr>
@@ -514,7 +524,7 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option value="7">0.7</option>
 														<option value="8">0.8</option>
 														<option value="9">0.9</option>
-														<option value="9">1.0</option>
+														<option value="10">1.0</option>
 													</select>
 												</td>
 												<td scope="col">
@@ -533,18 +543,52 @@ if (!function_exists('se_sitemap_gen_basic_page')) {
 														<option
 															value="0"><?php _e("None", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
+															value="1"><?php _e("Mobile(For Google)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="2"><?php _e("Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="3"><?php _e("PC,Mobile(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 														<option
-															value="0"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
+															value="4"><?php _e("HtmlAdapt(For Baidu)", 'se-sitemap-gen-plugin'); ?></option>
 													</select>
 												</td>
 											</tr>
 											</tbody>
 										</table>
+										<script type="text/javascript">
+											function populate(id, id_array) {
+												var type = ['exclude', 'priority', 'frequency', 'mobile'];
+												var i = 0;
+												for (var obj in type) {
+													var eleid = 'se_sitemap_' + id + '_' + type[obj];
+													jQuery("#" + eleid + " [value='" + id_array[i++] + "']").attr('selected', 'selected');
+												}
+											}
+											populate('hp', [<?php echo $se_sitemap_settings['settings']['sitemap_settings']['home_page']['include']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['home_page']['priority']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['home_page']['frequency']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['home_page']['mobile']?>]);
+											populate('rp', [<?php echo $se_sitemap_settings['settings']['sitemap_settings']['regular_page']['include']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['regular_page']['priority']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['regular_page']['frequency']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['regular_page']['mobile']?>]);
+											populate('pp', [<?php echo $se_sitemap_settings['settings']['sitemap_settings']['post_page']['include']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['post_page']['priority']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['post_page']['frequency']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['post_page']['mobile']?>]);
+											populate('ct', [<?php echo $se_sitemap_settings['settings']['sitemap_settings']['categories']['include']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['categories']['priority']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['categories']['frequency']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['categories']['mobile']?>]);
+											populate('tg', [<?php echo $se_sitemap_settings['settings']['sitemap_settings']['tags']['include']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['tags']['priority']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['tags']['frequency']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['tags']['mobile']?>]);
+											populate('au', [<?php echo $se_sitemap_settings['settings']['sitemap_settings']['author_page']['include']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['author_page']['priority']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['author_page']['frequency']?>,
+												<?php echo $se_sitemap_settings['settings']['sitemap_settings']['author_page']['mobile']?>]);
+										</script>
 									</div>
 								</div>
 							</div>
@@ -738,6 +782,9 @@ if (!function_exists('se_sitemap_lang_loader')) {
 		load_plugin_textdomain('se-sitemap-gen-plugin', false, dirname(plugin_basename(__FILE__)) . '/lang/');
 	}
 }
+
+/** Init the plugin **/
+add_action('init', 'se_sitemap_init');
 
 /** Tie the language files into Wordpress **/
 add_action('plugins_loaded', 'se_sitemap_lang_loader');

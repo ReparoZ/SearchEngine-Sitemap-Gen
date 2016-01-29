@@ -1,0 +1,51 @@
+{
+  "settings": {
+    "display_welcome_message": true,
+    "general_settings": {
+      "se_sitemap_create": true,
+      "se_sitemap_robots": true,
+      "se_sitemap_islimit": true,
+      "se_sitemap_limit": 1500,
+      "se_sitemap_html": true,
+      "se_sitemap_credit": true
+    },
+    "sitemap_settings": {
+      "home_page": {
+        "include": 1,
+        "priority": 10,
+        "frequency": 2,
+        "mobile": 0
+      },
+      "regular_page": {
+        "include": 1,
+        "priority": 6,
+        "frequency": 4,
+        "mobile": 0
+      },
+      "post_page": {
+        "include": 1,
+        "priority": 6,
+        "frequency": 4,
+        "mobile": 0
+      },
+      "categories": {
+        "include": 1,
+        "priority": 3,
+        "frequency": 3,
+        "mobile": 0
+      },
+      "tags": {
+        "include": 1,
+        "priority": 3,
+        "frequency": 3,
+        "mobile": 0
+      },
+      "author_page": {
+        "include": 1,
+        "priority": 1,
+        "frequency": 3,
+        "mobile": 0
+      }
+    }
+  }
+}
